@@ -3,7 +3,7 @@ public class Menu {
 
   public int test() {
     var apps_menu = new GMenu.Tree(
-      "gnome-applications.menu",
+      "manokwari-applications.menu",
       GMenu.TreeFlags.INCLUDE_EXCLUDED
     );
 
