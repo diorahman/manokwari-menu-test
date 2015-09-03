@@ -46,7 +46,7 @@ public class Menu {
           var data = "{
             \"name\": \"%s\",
             \"icon\": \"%s\",
-          ".printf(name, icon);
+          ".printf(name, get_icon_path(icon));
           json.append(data);
           json.append("\"children\": [");
           depth++;
@@ -68,10 +68,10 @@ public class Menu {
           var desktop = entry.get_desktop_file_path();
           // print("  - %s (icon=%s;%s, file:%s)\n", name, icon, get_icon_path(icon), path);
           var data = "{
-            \"icon\": \"%s\",
             \"name\": \"%s\",
+            \"icon\": \"%s\",
             \"desktop\": \"%s\"
-          },".printf(icon, name, desktop);
+          },".printf(name, get_icon_path(icon), desktop);
           json.append(data);
           break;
 
