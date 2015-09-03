@@ -1,5 +1,6 @@
 public class Menu {
   private int depth = 0;
+  private StringBuilder json;
 
   public int test() {
     var apps_menu = new GMenu.Tree(
@@ -16,9 +17,16 @@ public class Menu {
       print("Error loading menu file: %s", e.message);
       return 0;
     }
-
+    
+    // the populate function
+    json = new StringBuilder();
+    json.assign("[");
     update_tree(apps_menu.get_root_directory());
-    print("OK!\n");
+    if (json.str[json.len -1] == ',') {
+      json.erase(json.len - 1, 1);
+    }
+    json.append("]");
+    print("%s\n", json.str);
     return 1;
   }
   
@@ -28,11 +36,28 @@ public class Menu {
     while ((type = iter.next()) != GMenu.TreeItemType.INVALID) {
       switch (type) {
         case GMenu.TreeItemType.DIRECTORY:
+          if (depth > 0) {
+            break;
+          }
           var dir = iter.get_directory();
           var name = dir.get_name();
           var icon = dir.get_icon().to_string();
-          print("dir: %s (icon=%s;%s)\n", name, icon, get_icon_path(icon));
+          // print("dir: %s (icon=%s;%s)\n", name, icon, get_icon_path(icon));
+          var data = "{
+            \"name\": \"%s\",
+            \"icon\": \"%s\",
+          ".printf(name, icon);
+          json.append(data);
+          json.append("\"children\": [");
+          depth++;
           update_tree(dir);
+          depth--;
+          if (json.str [json.len - 1] == ',') {
+            json.erase(json.len - 1, 1);
+          }
+          json.append("]");
+          json.append("},");
+
           break;
         case GMenu.TreeItemType.ALIAS:
         case GMenu.TreeItemType.ENTRY:
@@ -40,8 +65,14 @@ public class Menu {
           var app_info = entry.get_app_info();
           var name = app_info.get_display_name();
           var icon = app_info.get_string("Icon");
-          var path = entry.get_desktop_file_path();
-          print("  - %s (icon=%s;%s, file:%s)\n", name, icon, get_icon_path(icon), path);
+          var desktop = entry.get_desktop_file_path();
+          // print("  - %s (icon=%s;%s, file:%s)\n", name, icon, get_icon_path(icon), path);
+          var data = "{
+            \"icon\": \"%s\",
+            \"name\": \"%s\",
+            \"desktop\": \"%s\"
+          },".printf(icon, name, desktop);
+          json.append(data);
           break;
 
         default:
