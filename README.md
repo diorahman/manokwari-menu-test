@@ -2,7 +2,7 @@
 
 ### install
 
-install deps.
+install the required deps (hint: peek the Makefile), then:
 
 ```
 $ git clone git@github.com:diorahman/manokwari-menu-test.git
